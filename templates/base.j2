@@ -1,0 +1,18 @@
+<html>
+<head>
+	<title>{% block pagetitle %}Dungeon Journal{% endblock %}</title>
+	<link rel="shortcut icon" href="/static/img/favicon.ico">
+	<link rel="stylesheet" href="/static/css/style.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Libre+Franklin:400,500,600,800" >
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script src="/static/js/lib/jquery-3.2.1.min.js"></script>
+	<script src="/static/js/lib/js.cookie.js"></script>
+	{% block scripts %}{% endblock %}
+</head>
+<body>
+	{% include "header.j2" %}
+	{% block body %}{% endblock %}
+	{% include "footer.j2" %}
+</body>
+</html>

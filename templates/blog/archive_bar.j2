@@ -1,0 +1,21 @@
+<aside class="archive-bar">
+  <script src="/static/js/archive-bar.js"></script>
+  <div class="title">Archive</div>
+  <ul>
+    {% for year in archive %}
+      <li class="year"><div>{{ year.year }}</div>
+        <ul>
+          {% for month in year.months %}
+            <li class="month"><div>{{ month.month }}</div>
+              <ul>
+                {% for post in month.posts %}
+                  <li class="post"><a href="/blog/post/{{ post.link }}">{{ post.title }}</a></li>
+                {% endfor %}
+              </ul>
+            </li>
+          {% endfor %}
+        </ul>
+      </li>
+    {% endfor %}
+  </ul>
+</aside>

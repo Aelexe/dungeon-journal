@@ -1,0 +1,17 @@
+{% extends "base.j2" %}
+{% block pagetitle %}{{ post.title }} - {{ super() }}{% endblock %}
+{% block body %}
+<main class="blog">
+	<img class="banner" src="/static/img/blog-banner.jpg">
+	<div class="center-pane clear-fix">
+		{% include "blog/archive_bar.j2" %}
+		<div class="content-bar">
+   			<article class="post">
+				<h1>{{ post.title }}</h1>
+				<time>{{ post.created_date }}</time>
+				<div class="content">{{ post.content|safe }}</div>
+			</article>
+		</div>
+	</div>
+</main>
+{% endblock %}

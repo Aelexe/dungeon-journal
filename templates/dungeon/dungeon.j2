@@ -1,0 +1,27 @@
+{% extends "base.j2" %}
+{% block pagetitle %}{{ dungeon.name }} - {{ super() }}{% endblock %}
+{% block body %}
+<main class="dungeon">
+	<img class="banner" src="/static/img/dungeons/{{ dungeon.link }}/banner.jpg">
+	<div class="center-pane">
+		<article>
+			<h1>{{ dungeon.name }}</h1>
+			<p>{{ dungeon.description }}</p>
+			{% for wing in dungeon.wings %}
+				<section>
+					<h2>{{ wing.name }}</h2>
+					<p>{{ wing.description }}</p>
+					{% for boss in wing.bosses %}
+						<div class="boss-link">
+							<a href="/dungeon/{{ dungeon.link }}/{{ boss.link }}">
+								<div><img src="/static/img/dungeons/{{ dungeon.link }}/{{ boss.link }}.png"></div>
+								<h3>{{ boss.name }}</h3>
+							</a>
+						</div>
+					{% endfor %}
+				</section>
+			{% endfor %}
+		</article>
+	</div>
+</main>
+{% endblock %}

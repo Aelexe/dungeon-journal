@@ -1,0 +1,20 @@
+{% extends "base.j2" %}
+{% block pagetitle %}Blog - {{ super() }}{% endblock %}
+{% block body %}
+<main class="blog">
+	<img class="banner" src="/static/img/blog-banner.jpg">
+	<div class="center-pane clear-fix">
+		{% include "blog/archive_bar.j2" %}
+		<div class="content-bar">
+			{% for post in posts %}
+				<article class="post">
+					<h1><a href="/blog/post/{{ post.link }}">{{ post.title }}</a></h1>
+					<time>{{ post.created_date }}</time>
+					<div class="content">{{ post.preview_content|safe }}</div>
+					<a class="read-more" href="/blog/post/{{ post.link }}">Read more</a>
+				</article>
+			{% endfor %}
+		</div>
+	</div>
+</main>
+{% endblock %}

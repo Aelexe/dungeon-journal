@@ -1,0 +1,126 @@
+{% extends "base.j2" %}
+{% block pagetitle %}{{ boss.name }} - {{ super() }}{% endblock %}
+{% block scripts %}
+<script src="/static/js/boss.js"></script>
+{% endblock %}
+{% block body %}
+<main>
+	<img class="banner" src="/static/img/dungeons/{{ dungeon_link }}/banner.jpg">
+	<div class="center-pane">
+		<article class="boss">
+			<section class="bread-crumb">
+				<a href="/dungeon/{{ dungeon_link }}">{{ dungeon_name }}</a> <span>></span> <span>{{ boss.name }}</span>
+			</section>
+			<section class="bio">
+				<h1>{{ boss.name }}</h1><img height="50px" src="/static/img/dungeons/{{ dungeon_link }}/{{ boss.link }}.png">
+				<p>{{ boss.description }}</p>
+			</section>
+			<section class="overview">
+				<div>
+					<h2>Overview</h2>
+					{% macro create_difficulty_toggles(difficulties) %}
+						{% set difficulty_map = {"lfr": "LFR", "normal": "Normal", "heroic": "Heroic", "mythic": "Mythic"} %}
+						<div class="difficulty-toggle toggle">
+							{% for difficulty in difficulties %}
+								<span toggle-val="{{ difficulty }}">{{ difficulty_map[difficulty] }}</span>
+							{% endfor %}
+						</div>
+					{% endmacro %}
+					{% if boss.overview %}
+						{{ create_difficulty_toggles(boss.difficulties) }}
+					{% endif %}
+				</div>
+				{% macro create_ability(ability) %}
+					<li class="ability{% for difficulty in ability.difficulty %} difficulty-{{ difficulty }}{% endfor %}">
+						{% if ability.type %}<img src="/static/img/journal-icons/{{ ability.type }}.png">{% endif %}
+						<span class="name">{% if ability.link %}<a href="https://www.wowhead.com/{{ ability.link.type }}={{ ability.link.id }}" target="_blank">{% endif %}[{{ ability.name }}]{% if ability.link %}</a>{% endif %}</span>
+						{%- if ability.description -%}
+							<span class="description">
+								{%- if ability.description is string -%}
+									{{ ability.description|replace("\n", "<br>") }}
+								{% else %}
+									{% for description in ability.description %}
+										<span class="{% for difficulty in description.difficulty %} difficulty-{{ difficulty }}{% endfor %}">{{ description.text|replace("\n", "<br>") }}</span>
+									{% endfor %}
+								{% endif %}
+							</span>
+						{% endif %}
+						{% if ability.sub_abilities %}
+							<ul>
+								{% for sub_ability in ability.sub_abilities %}
+									{{ create_ability(sub_ability) }}
+								{% endfor %}
+							</ul>
+						{% endif %}
+					</li>
+				{% endmacro %}
+				{% macro create_phase(phase) %}
+					<li class="phase{% for difficulty in phase.difficulty %} difficulty-{{ difficulty }}{% endfor %}">
+						<div class="name">{{ phase.name }}</div>
+						{%- if phase.description -%}
+							<div class="description">
+								{{ phase.description|replace("\n", "<br>") }}
+							</div>
+						{% endif %}
+						{% if phase.sub_abilities %}
+							<ul>
+								{% for sub_ability in phase.sub_abilities %}
+									{{ create_ability(sub_ability) }}
+								{% endfor %}
+							</ul>
+						{% endif %}
+					</li>
+				{% endmacro %}
+				{% macro create_empty_section() %}
+					<p>This section is currently incomplete. Please check back later!</p>
+				{% endmacro %}
+				{% if boss.overview %}
+					<ul>
+					{% for ability in boss.overview %}
+						{% if ability.type and ability.type == "phase" %}
+							{{ create_phase(ability) }}
+						{% else %}
+							{{ create_ability(ability) }}
+						{% endif %}
+					{% endfor %}
+					</ul>
+				{% else %}
+					{{ create_empty_section() }}
+				{% endif %}
+			</section>
+			<section class="strategy">
+				<div>
+					<h2>Strategy</h2>
+					{% if boss.strategy %}
+						{{ create_difficulty_toggles(boss.difficulties) }}
+						<div class="role-toggle toggle"><span toggle-val="tank">Tank</span><span toggle-val="healer">Healer</span><span toggle-val="rdps">RDPS</span><span toggle-val="mdps">MDPS</span></div>
+					{% endif %}
+				</div>
+				{% macro create_tactic(tactic) %}
+					<li class="tactic{% for role in tactic.role %} role-{{ role }}{% endfor %}{% for difficulty in tactic.difficulty %} difficulty-{{ difficulty }}{% endfor %}">
+						<span class="type {{ tactic.type }} {{ tactic.color }}">{{ tactic.name }}</span>
+						<span class="description">
+							{%- if tactic.description is string -%}
+								{{ tactic.description|replace("\n", "<br>")|replace_links() }}
+							{% else %}
+								{% for description in tactic.description %}
+									<span class="role-all {% for difficulty in description.difficulty %} difficulty-{{ difficulty }}{% endfor %}">{{ description.text|replace("\n", "<br>")|replace_links() }}</span>
+								{% endfor %}
+							{% endif %}
+						</span>
+					</li>
+				{% endmacro %}
+				{% if boss.strategy %}
+					<ul>
+						{% for tactic in boss.strategy %}
+							{{ create_tactic(tactic) }}
+						{% endfor %}
+					</ul>
+				{% else %}
+					{{ create_empty_section() }}
+				{% endif %}
+			</section>
+		</article>
+	</div>
+</main>
+{% endblock %}
